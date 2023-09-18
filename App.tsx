@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import MapView, { Region, Marker } from "react-native-maps";
 import { getChargingStations, chargeAtStation } from "./api";
 import { requestLocationPermissions } from "./helpers";
-import { LocationObject } from "expo-location";
 
 interface Coordinate {
   latitude: number;

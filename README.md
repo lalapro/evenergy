@@ -14,7 +14,7 @@ The lifecycle of this simple applciation is as follows.
 2. If accepted, the app will then use the users current location to fetch the closest 20 charging stations
 3. The call to fetch the charging stations is made whenever the map is moved
 4. The user can then tap on one of the charging stations to make the api call to the backend for EVEnergy
-5. If the user rejects the location prompt, the app will be hardcoded to use the coordinates of a brooklyn neighborhood, and the user cannot update the coordinates unless they enable locations permission
+5. If the user rejects the location prompt, the app will be hardcoded to start from the coordinates of a brooklyn neighborhood, but the user is still able to search for surrounding chargers by moving the map around
 
 ## Issues
 
@@ -36,3 +36,7 @@ I have decided to use a mapview to render the closest charging stations as it wa
 1. Loading indicator when fetching new stations
 2. Add bounding box for cleaner UI when rendering markers
 3. Error handling and clarification to users
+4. Add a debounce function (per suggestion from openchargemap) or disable auto search and add a "Search here" button to limit api calls
+5. Create separate files/folders for smaller components like markers and list views if needed
+
+Total time spent = ~2.5 hours
