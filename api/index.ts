@@ -6,12 +6,13 @@ const CHARGE_URL = `https://example.ev.energy/chargingsession`
 const MAX_RESULTS = 20;
 
 interface GetChargingStationsPayload {
-  boundingBox: string;
+  longitude: number;
+  latitude: number;
 }
 
 export const getChargingStations = async (payload: GetChargingStationsPayload) => {
   try {
-    const response = await fetch(`${API_URL}/poi/?output=json&countrycode=US&maxresults=${MAX_RESULTS}&boundingbox=${payload.boundingBox}&compact=true&verbose=false`, {
+    const response = await fetch(`${API_URL}/poi/?output=json&countrycode=US&maxresults=${MAX_RESULTS}&latitude=${payload.latitude}&longitude=${payload.longitude}&compact=true&verbose=false`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -20,7 +21,7 @@ export const getChargingStations = async (payload: GetChargingStationsPayload) =
     })
 
     if (!response.ok) {
-      console.error("error with api resonse", await response.text());
+      // console.error("error with api resonse", await response.text());
       throw new Error(`API responded with status error: ${response.status}`);
     }
 
@@ -35,7 +36,7 @@ export const getChargingStations = async (payload: GetChargingStationsPayload) =
       title: m.AddressInfo.Title,
     }));
   } catch (e) {
-    console.log("error in get charging stations", e)
+    // console.log("error in get charging stations", e)
     return false
   }
 }
@@ -46,9 +47,9 @@ interface ChargerPayload {
   charger_id: number;
 }
 
+// IMPORTANT: api is currently not working, no response given back and no status code
 export const chargeAtStation = async (payload: ChargerPayload) => {
   try {
-    console.log("payload", payload)
     const response = await fetch(`${CHARGE_URL}`, {
       method: "POST",
       headers: {
@@ -58,16 +59,15 @@ export const chargeAtStation = async (payload: ChargerPayload) => {
     })
 
     if (!response.ok) {
-      console.error("error with api resonse", await response.text());
+      // console.error("error with api resonse", await response.text());
       throw new Error(`API responded with status error: ${response.status}`);
     }
 
     let resp;
     resp = await response.json();
-    console.log("charging epi")
-    console.log(resp)
+    return resp;
   } catch (e) {
-    console.log("error in charge at station..", e)
+    // console.log("error in charge at station..", e)
     return false
   } 
 }

@@ -17,29 +17,18 @@ interface Stations {
   title: string;
 }
 
-const DEFAULT_BOUNDING_BOX = `(40.703603004232335,-73.98284646302767),(40.653603212937796,-73.94905639426918)`;
-
-const DEFAULT_LOCATION: LocationObject = {
-  coords: {
-    accuracy: 5,
-    altitude: 0,
-    altitudeAccuracy: -1,
-    heading: -1,
-    latitude: 40.67724308765143,
-    longitude: -73.96571318183904,
-    speed: -1,
-  },
-  timestamp: 1695057335143.832,
+const DEFAULT_LOCATION: Coordinate = {
+  latitude: 40.67724308765143,
+  longitude: -73.96571318183904,
 };
 
 const App = () => {
-  const [location, setLocation] = useState<LocationObject>(DEFAULT_LOCATION);
+  const [location, setLocation] = useState<Coordinate>(DEFAULT_LOCATION);
   const [loading, setLoading] = useState<boolean>(true);
-  const [boundingBox, setBoundingBox] = useState<string>(DEFAULT_BOUNDING_BOX);
   const [stations, setStations] = useState<Stations[]>([]);
 
   const getClosestChargingStations = async () => {
-    const results = await getChargingStations({ boundingBox });
+    const results = await getChargingStations(location);
     if (results) {
       setStations(results);
     }
@@ -47,31 +36,25 @@ const App = () => {
   };
 
   const setup = async () => {
-    let location = await requestLocationPermissions();
-    if (location) {
-      // console.log(location);
-      setLocation(location);
+    // will request for location if first time using app
+    let userLocation = await requestLocationPermissions();
+    if (userLocation) {
+      setLocation({
+        latitude: userLocation.coords.latitude,
+        longitude: userLocation.coords.longitude,
+      });
     } else {
-      // assume no permissions for now and default to preset coordinates
+      // assume permissions not given for now and default to preset coordinates
+      // show alert to user here to enable locations if needed
     }
     getClosestChargingStations();
   };
 
   const onRegionChangeComplete = (region: Region) => {
-    console.log(region);
-    const topLeft = {
-      latitude: region.latitude + region.latitudeDelta / 2,
-      longitude: region.longitude - region.longitudeDelta / 2,
-    };
-
-    const bottomRight = {
-      latitude: region.latitude - region.latitudeDelta / 2,
-      longitude: region.longitude + region.longitudeDelta / 2,
-    };
-
-    setBoundingBox(
-      `(${topLeft.latitude},${topLeft.longitude}),(${bottomRight.latitude},${bottomRight.longitude})`
-    );
+    setLocation({
+      latitude: region.latitude,
+      longitude: region.longitude,
+    });
   };
 
   const startCharge = async (chargePointID: number) => {
@@ -80,7 +63,12 @@ const App = () => {
       car_id: 123,
       charger_id: chargePointID,
     };
-    await chargeAtStation(payload);
+    const response = await chargeAtStation(payload);
+    if (response) {
+      // navigate to success state
+    } else {
+      // show feedback to user if error
+    }
   };
 
   useEffect(() => {
@@ -89,7 +77,7 @@ const App = () => {
 
   useEffect(() => {
     getClosestChargingStations();
-  }, [boundingBox]);
+  }, [location.latitude, location.longitude]);
 
   return (
     <View style={styles.container}>
@@ -98,8 +86,8 @@ const App = () => {
           style={styles.map}
           showsUserLocation={true}
           initialRegion={{
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
+            latitude: location.latitude,
+            longitude: location.longitude,
             latitudeDelta: 0.05,
             longitudeDelta: 0.025,
           }}
