@@ -38,5 +38,6 @@ I have decided to use a mapview to render the closest charging stations as it wa
 3. Error handling and clarification to users
 4. Add a debounce function (per suggestion from openchargemap) or disable auto search and add a "Search here" button to limit api calls
 5. Create separate files/folders for smaller components like markers and list views if needed
+6. Add alert confirmation to ensure user wants to charge at specific station, in case users want to tap on markers for more details
 
 Total time spent = ~2.5 hours
