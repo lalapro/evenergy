@@ -4,7 +4,7 @@
 
 This app is built using create-expo-app, it doesn't work on a physical build and must be run on an ios simulator and or phone using Expo go as I have not tested this on an android phone
 
-To run the app, git clone this repo, cd into `evenergy` and run `npx expo start`, you can then spin up an ios simulator or use the expo go app to run this application.
+To run the app, git clone this repo, cd into `evenergy` and run `npm install && npx expo start`, you can then spin up an ios simulator or use the expo go app to run this application.
 
 ## Lifecycle
 
